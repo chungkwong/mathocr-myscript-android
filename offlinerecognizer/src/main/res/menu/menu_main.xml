@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_latex"
+            android:title="@string/latex" />
+        <item
+            android:id="@+id/menu_mathml"
+            android:title="@string/mathml" />
+        <item
+            android:id="@+id/menu_jiix"
+            android:title="@string/jiix" />
+    </group>
+    <item
+        android:id="@+id/menu_white_on_black"
+        android:checkable="true"
+        android:title="@string/white_on_black" />
+    <item
+        android:id="@+id/menu_test"
+        android:title="@string/test"
+        android:visible="false"/>
+
+</menu>

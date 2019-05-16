@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="error_message" type="id" />
+    <item name="error_detail" type="id" />
+</resources>

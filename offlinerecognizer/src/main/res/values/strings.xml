@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">MathOCR</string>
+    <string name="title_activity_error">Error</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
+    <string name="clear">Clear</string>
+    <string name="write">Write</string>
+    <string name="move">Move</string>
+    <string name="recognize">Recognize</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_main">MathOCR(Powered by MyScript®)</string>
+    <string name="action_settings">Settings</string>
+    <string name="test">Test</string>
+    <string name="file">File</string>
+    <string name="camera">Camera</string>
+    <string name="latex">LaTeX</string>
+    <string name="mathml">MathML</string>
+    <string name="jiix">JIIX</string>
+    <string name="white_on_black">White on black</string>
+</resources>
