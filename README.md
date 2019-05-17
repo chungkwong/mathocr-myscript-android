@@ -46,6 +46,22 @@ Ordinary text and grid lines are not allowed.
 4. Click the button `Recognize` and the recognized LaTeX code will show at the bottom
 5. If you need MathML in stead of LaTeX, choose `MathML` from the menu
 
+## Citation
+
+The idea used is explained in the article
+__Stroke extraction for offline handwritten mathematical expression recognition__
+, which is available at [arXiv](https://arxiv.org/abs/1905.06749).
+You can cite the article using the following BibTex code:
+
+```bibtex
+@misc{1905.06749,
+Author = {Chungkwong Chan},
+Title = {Stroke extraction for offline handwritten mathematical expression recognition},
+Year = {2019},
+Eprint = {arXiv:1905.06749},
+}
+```
+
 # 基于笔划提取的脱机手写数学公式识别
 
 本项目提供一个可从清晰的图片中还原笔划信息的程序原型。与联机手写数学公式识别结合的话，
@@ -88,3 +104,16 @@ CROHME 2019|65.05%|||
 4. 点击`识别`后LaTeX代码会显示在下方
 5. 如果你需要MathML而非LaTeX，在菜单中选择`MathML`
 
+## 引用
+
+本项目的描述参见文档 __通过笔划提取识别脱机手写数学公式__，它可从
+[arXiv](https://arxiv.org/abs/1905.06749)下载。你可以使用以下BibTex代码引用该文:
+
+```bibtex
+@misc{1905.06749,
+Author = {Chungkwong Chan},
+Title = {Stroke extraction for offline handwritten mathematical expression recognition},
+Year = {2019},
+Eprint = {arXiv:1905.06749},
+}
+```
