@@ -2,7 +2,7 @@
 
 # Offline handwritten mathematical expression recognition via stroke extraction for Android
 
-The repository provide a proof-of-concept stroke extractor that can extract strokes from clean
+The repository provides a proof-of-concept stroke extractor that can extract strokes from clean
 bitmap images. The stroke extractor can be used to recognize offline handwritten
 mathematical expression if a online recognizer is given. For example, when combined
 with MyScript, the resulting offline recognition system was **ranked #3 in the offline
@@ -16,13 +16,13 @@ CROHME 2014|58.22%|71.60%|75.15%|77.38%
 CROHME 2016|65.65%|77.68%|82.56%|85.00%
 CROHME 2019|65.22%|78.48%|83.07%|84.90%
 
-Although good accuracy is achieved on datasets from CROHME, the program
+Although good accuracy is achieved on datasets of CROHME, the program
 may produce poor results on real world images. For example, the procedure do not
 work well on the following images:
-- Image containing other objects. An image should contains exactly one formula and nothing else.
+- Images containing other objects. An image should contain exactly one formula and nothing else.
 Ordinary text and grid lines are not allowed.
-- Image with low contrast. The strokes may not be distinguished from background properly.
-- Image with low resolution. The stroke extractor may not segment touching symbols correctly.
+- Images with low contrast. The strokes may not be distinguished from background properly.
+- Images with low resolution. The stroke extractor may not segment touching symbols correctly.
 - Printed mathematical expressions. Serifs can distract the stroke extractor.
 
 ## Build from source
@@ -31,7 +31,7 @@ Ordinary text and grid lines are not allowed.
 2. Log into your MyScript [dashboard](https://developer.myscript.com/dashboard)
 3. Manage `On-device recognition(Free trial)`
 4. Create an application with any name and description you like
-5. Create a certificate with Identifier `cc.chungkwong.mathocr` for `Android`
+5. Create a certificate with identifier `cc.chungkwong.mathocr` for `Android`
 6. Download the certificate just created to `offlinerecognizer/src/main/java/cc/chungkwong/mathocr/MyCertificate.java`
 7. Change the first line of that file to `package cc.chungkwong.mathocr;`
 8. Generate signed APK for the module `offlinerecognizer` using Android Studio or command line
@@ -40,7 +40,7 @@ Ordinary text and grid lines are not allowed.
 
 1. Install the APK just built
 2. Launch the application `MathOCR`
-3. Choose an image to be recognized:
+3. Choose the image to be recognized:
     - Click the button `File` and then choose a file
     - Click the button `Camera` and then take a photo
 4. Click the button `Recognize` and the recognized LaTeX code will show at the bottom
