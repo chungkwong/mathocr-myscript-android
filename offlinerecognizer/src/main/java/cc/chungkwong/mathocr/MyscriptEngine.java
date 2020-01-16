@@ -36,9 +36,9 @@ public class MyscriptEngine {
             conf.setBoolean("export.jiix.strokes", false);
             conf.setBoolean("gesture.enable", false);
 //            conf.setString("math.configuration.name", "crohme");
-            conf.setString("math.configuration.name", "standard");
+//            conf.setString("math.configuration.name", "standard");
 //            conf.setString("math.configuration.name", "small");
-//            conf.setString("math.configuration.name", "mini");
+            conf.setString("math.configuration.name", "mini");
 //            conf.setString("math.configuration.name", "single");
             conf.setNumber("math.solver.fractional-part-digits", 15);
             conf.setBoolean("math.solver.enable", false);
@@ -48,10 +48,10 @@ public class MyscriptEngine {
 
     public static synchronized Editor getEditor(EditorView widget) {
         if (editor == null) {
-//            float dpiX = 384;
-//            float dpiY = 384;
-            float dpiX = 576;
-            float dpiY = 576;
+            float dpiX = 384;
+            float dpiY = 384;
+//            float dpiX = 576;
+//            float dpiY = 576;
 //            float dpiX = 192;
 //            float dpiY = 192;
             Renderer renderer = engine.createRenderer(dpiX, dpiY, null);
@@ -59,7 +59,7 @@ public class MyscriptEngine {
             DisplayMetrics displayMetrics = widget.getResources().getDisplayMetrics();
             Map<String, Typeface> typefaceMap = new HashMap<>();
             editor.setFontMetricsProvider(new FontMetricsProvider(displayMetrics, typefaceMap));
-            editor.setViewSize(1500, 1500);
+            editor.setViewSize(1010, 1010);
 //            editor.setViewSize(38, 38);
             try {
                 pkg = engine.createPackage("ttmp.iink");

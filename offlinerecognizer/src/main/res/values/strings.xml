@@ -17,4 +17,6 @@
     <string name="mathml">MathML</string>
     <string name="jiix">JIIX</string>
     <string name="white_on_black">White on black</string>
+    <string name="title_activity_batch">Batch</string>
+    <string name="batch">Batch</string>
 </resources>

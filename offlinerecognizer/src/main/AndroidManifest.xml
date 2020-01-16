@@ -28,7 +28,7 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".TestActivity"
-            android:label="@string/title_activity_test"></activity>
+            android:label="@string/title_activity_test" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -37,8 +37,12 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity
+            android:name=".BatchActivity"
+            android:label="@string/title_activity_batch"></activity>
     </application>
 
 </manifest>

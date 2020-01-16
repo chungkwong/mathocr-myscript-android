@@ -246,7 +246,7 @@ public class ThinTracer {
             changed = false;
             for (Segment edge : graph.getEdges()) {
                 int t = square(edge.getTrace().getPoints().size());
-                if (t <= edge.getThick() || t <= thick || t <= 9) {
+                if (t<=thick / 2){//t <= edge.getThick() || t <= thick || t <= 9) {
                     removeEdge(edge, graph);
                     changed = true;
                     break;

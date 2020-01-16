@@ -162,6 +162,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, TestActivity.class));
                 return true;
             }
+            case R.id.menu_batch: {
+                startActivity(new Intent(this, BatchActivity.class));
+                return true;
+            }
             case R.id.menu_latex: {
                 type = MimeType.LATEX;
                 item.setChecked(true);

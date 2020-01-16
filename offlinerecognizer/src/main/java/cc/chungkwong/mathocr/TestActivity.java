@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.util.JsonReader;
 import android.util.Log;
@@ -70,6 +71,7 @@ public class TestActivity extends Activity implements Runnable {
         File[] files = inDir.listFiles();
         final int total = files.length;
         int processed = 0;
+        long timeUsed=0;
         try {
             for (File in : files) {
                 ++processed;
@@ -80,12 +82,14 @@ public class TestActivity extends Activity implements Runnable {
                     if (out.exists()) {
                         continue;
                     }
+                    long startTime = SystemClock.currentThreadTimeMillis();
                     testFile(in, out);
-                    runOnUiThread(new Prompt(processed + "/" + total));
+                    timeUsed+=(SystemClock.currentThreadTimeMillis()-startTime);
+                    runOnUiThread(new Prompt(processed + "/" + total+"("+timeUsed+"ms)"));
                     Thread.sleep(500);
                 }
             }
-            runOnUiThread(new Prompt("Finished"));
+            runOnUiThread(new Prompt("Finished("+timeUsed+"ms)"));
         } catch (Exception ex) {
             runOnUiThread(new Prompt("Error: " + ex.getMessage()));
             ex.printStackTrace();

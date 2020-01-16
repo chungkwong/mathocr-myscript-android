@@ -18,6 +18,10 @@
     <item
         android:id="@+id/menu_test"
         android:title="@string/test"
-        android:visible="false"/>
+        android:visible="true"/>
+    <item
+        android:id="@+id/menu_batch"
+        android:title="@string/batch"
+        android:visible="true"/>
 
 </menu>
