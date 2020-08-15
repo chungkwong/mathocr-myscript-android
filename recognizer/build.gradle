@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':extractor')
+    implementation group: 'org.bytedeco', name: 'openblas', version: '0.3.9-1.5.3'
+}
+
+sourceCompatibility = "7"
+targetCompatibility = "7"

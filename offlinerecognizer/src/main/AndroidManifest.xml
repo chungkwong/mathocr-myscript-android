@@ -31,7 +31,7 @@
             android:label="@string/title_activity_test" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="cc.chungkwong.mathocr"
             android:exported="false"
             android:grantUriPermissions="true">

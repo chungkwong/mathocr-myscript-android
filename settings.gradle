@@ -3,3 +3,5 @@ rootProject.name = 'cc.chungkwong.mathocr'
 include ':UIReferenceImplementation', ':offlinerecognizer'
 project(':offlinerecognizer').dir = new File(settingsDir, 'offlinerecognizer')
 project(':UIReferenceImplementation').dir = new File(settingsDir, 'UIReferenceImplementation')
+include ':recognizer'
+include ':extractor'

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_math"
+        android:checkable="true"
+        android:title="@string/math"
+        android:checked="true"/>
+    <item
+        android:id="@+id/menu_myscript"
+        android:checkable="true"
+        android:title="@string/myscript"
+        android:checked="true"
+        android:visible="false"/>
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_latex"

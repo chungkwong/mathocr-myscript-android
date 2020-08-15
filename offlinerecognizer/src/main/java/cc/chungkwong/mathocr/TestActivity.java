@@ -7,31 +7,43 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.JsonReader;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.myscript.iink.Engine;
+import com.myscript.iink.MimeType;
 import com.myscript.iink.PointerEvent;
 import com.myscript.iink.PointerEventType;
 import com.myscript.iink.PointerType;
 import com.myscript.iink.uireferenceimplementation.EditorView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class TestActivity extends Activity implements Runnable {
     private static final long MOVE_GAP = 1, LEAVE_GAP = 1000;
     private TextView status;
     private EditorView editorView;
     private Engine engine;
+    private boolean math;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +59,7 @@ public class TestActivity extends Activity implements Runnable {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
             }
         }
+        math=getIntent().getBooleanExtra("MATH_MODE",true);
         new Thread(this).start();
     }
 
@@ -65,39 +78,57 @@ public class TestActivity extends Activity implements Runnable {
     }
 
     private void testFormulas() {
-        File inDir = new File(Environment.getExternalStorageDirectory(), "/mathocr/in");
-        File outDir = new File(Environment.getExternalStorageDirectory(), "/mathocr/out");
-        outDir.mkdirs();
-        File[] files = inDir.listFiles();
-        final int total = files.length;
-        int processed = 0;
-        long timeUsed=0;
+        ZipOutputStream zipOut=null;
+        Writer logOut=null;
         try {
-            for (File in : files) {
-                ++processed;
-                Log.e("mathocr", in.getCanonicalPath());
-                if (in.getName().endsWith(".json")) {
-                    File out = new File(outDir, in.getName().replace(".json", ".jiix"));
-                    Log.e("mathocr", out.getCanonicalPath());
-                    if (out.exists()) {
-                        continue;
-                    }
+            int processed = 0;
+            long timeUsed=0;
+            ZipInputStream zipIn=new ZipInputStream(new BufferedInputStream(new FileInputStream(new File(Environment.getExternalStorageDirectory(), "/mathocr/in.zip"))));
+            zipOut=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "/mathocr/out.zip"))));
+            logOut=new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(Environment.getExternalStorageDirectory(), "/mathocr/out.log"))),"UTF-8");
+            ZipEntry entry;
+            while ((entry=zipIn.getNextEntry())!=null) {
+                if(!entry.isDirectory()){
+                    ++processed;
                     long startTime = SystemClock.currentThreadTimeMillis();
-                    testFile(in, out);
+                    String[] results=MyscriptEngine.recognize(readInk(new JsonReader(new InputStreamReader(zipIn, "UTF-8"))), editorView,math,math?MimeType.LATEX:MimeType.TEXT,math?MimeType.MATHML:MimeType.JIIX);
                     timeUsed+=(SystemClock.currentThreadTimeMillis()-startTime);
-                    runOnUiThread(new Prompt(processed + "/" + total+"("+timeUsed+"ms)"));
-                    Thread.sleep(500);
+                    logOut.write(entry.getName());
+                    logOut.write('\t');
+                    logOut.write(results[0].replaceAll("\\s+"," "));
+                    logOut.write('\n');
+                    zipOut.putNextEntry(new ZipEntry(entry.getName()));
+                    zipOut.write(results[1].getBytes("UTF-8"));
+                    zipOut.closeEntry();
+                    runOnUiThread(new Prompt(processed +"("+timeUsed+"ms)"));
+//                        Thread.sleep(500);
+                }
+                zipIn.closeEntry();
+            }
+            zipOut.finish();
+            zipOut.close();
+            zipIn.close();
+            runOnUiThread(new Prompt("Finished("+timeUsed+"ms)"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            runOnUiThread(new Prompt("Error: " + e.getMessage()));
+        }finally {
+            if(zipOut!=null) {
+                try {
+                    zipOut.finish();
+                    zipOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            runOnUiThread(new Prompt("Finished("+timeUsed+"ms)"));
-        } catch (Exception ex) {
-            runOnUiThread(new Prompt("Error: " + ex.getMessage()));
-            ex.printStackTrace();
+            if(logOut!=null) {
+                try {
+                    logOut.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-    }
-
-    private void testFile(File file, File result) throws IOException {
-        MyscriptEngine.recognize(readInk(file), result, editorView);
     }
 
     private void testSymbols() {
@@ -110,7 +141,7 @@ public class TestActivity extends Activity implements Runnable {
             int processed = 0;
             while (jsonReader.hasNext()) {
                 String name = jsonReader.nextName();
-                String value = MyscriptEngine.recognize(readInk(jsonReader), editorView);
+                String value = MyscriptEngine.recognize(readInk(jsonReader), editorView,math,math?MimeType.LATEX:MimeType.TEXT)[0];
                 writer.write(name);
                 writer.write(',');
                 writer.write(value);

@@ -35,6 +35,9 @@ public class MyscriptEngine {
             conf.setBoolean("text.guides.enable", false);
             conf.setBoolean("export.jiix.strokes", false);
             conf.setBoolean("gesture.enable", false);
+            conf.setString("text.configuration.bundle", "en_US");
+            conf.setString("text.configuration.name", "IAM");
+
 //            conf.setString("math.configuration.name", "crohme");
 //            conf.setString("math.configuration.name", "standard");
 //            conf.setString("math.configuration.name", "small");
@@ -48,8 +51,10 @@ public class MyscriptEngine {
 
     public static synchronized Editor getEditor(EditorView widget) {
         if (editor == null) {
-            float dpiX = 384;
-            float dpiY = 384;
+            float dpiX = 300;
+            float dpiY = 300;
+//            float dpiX = 384;
+//            float dpiY = 384;
 //            float dpiX = 576;
 //            float dpiY = 576;
 //            float dpiX = 192;
@@ -70,32 +75,21 @@ public class MyscriptEngine {
         return editor;
     }
 
-    public static synchronized String recognize(PointerEvent[] events, EditorView widget) throws IOException {
+    public static synchronized String[] recognize(PointerEvent[] events, EditorView widget,boolean math,MimeType... formats) throws IOException {
         Editor editor = getEditor(widget);
-        ContentPart part = pkg.createPart("Math");
+        ContentPart part = pkg.createPart(math?"Math":"Text");
         editor.setPart(part);
         editor.pointerEvents(events, false);
         editor.convert(null, editor.getSupportedTargetConversionStates(null)[0]);
         editor.waitForIdle();
-        String string = editor.export_(editor.getRootBlock(), MimeType.LATEX, null);
+        String[] results=new String[formats.length];
+        for (int i=0;i<results.length;i++){
+            results[i]=editor.export_(editor.getRootBlock(), formats[i], null);
+        }
         pkg.removePart(part);
         part.close();
-        return string;
+        return results;
     }
-
-    public static synchronized void recognize(PointerEvent[] events, File result, EditorView widget) throws IOException {
-        Editor editor = getEditor(widget);
-        ContentPart part = pkg.createPart("Math");
-        editor.setPart(part);
-        editor.pointerEvents(events, false);
-        editor.convert(null, editor.getSupportedTargetConversionStates(null)[0]);
-        editor.waitForIdle();
-        //editor.export_(editor.getRootBlock(),result.getCanonicalPath(), MimeType.JIIX,null);
-        editor.export_(editor.getRootBlock(), result.getCanonicalPath(), MimeType.MATHML, null);
-        pkg.removePart(part);
-        part.close();
-    }
-
     public static void clearUp() {
         editor.close();
         editor = null;

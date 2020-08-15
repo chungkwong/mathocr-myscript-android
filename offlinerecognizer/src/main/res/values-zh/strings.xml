@@ -19,4 +19,7 @@
     <string name="jiix">JIIX</string>
     <string name="white_on_black">黑底白字</string>
     <string name="batch">批处理</string>
+    <string name="math">数学公式</string>
+    <string name="title_activity_batch">批处理</string>
+    <string name="myscript">MyScript</string>
 </resources>

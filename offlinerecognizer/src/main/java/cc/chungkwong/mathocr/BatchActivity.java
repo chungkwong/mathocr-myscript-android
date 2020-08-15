@@ -1,10 +1,6 @@
 package cc.chungkwong.mathocr;
 
-import android.Manifest;
-import android.app.ActivityManager;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -12,28 +8,22 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.os.Debug;
 import android.os.Environment;
-import android.os.SystemClock;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.provider.DocumentFile;
-import android.util.JsonReader;
+
+import androidx.documentfile.provider.DocumentFile;
+
 import android.util.Log;
 import android.widget.TextView;
 
 import com.myscript.iink.Engine;
+import com.myscript.iink.MimeType;
 import com.myscript.iink.PointerEvent;
 import com.myscript.iink.PointerEventType;
 import com.myscript.iink.PointerType;
 import com.myscript.iink.uireferenceimplementation.EditorView;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -50,6 +40,7 @@ public class BatchActivity extends Activity  implements Runnable {
     private Engine engine;
     private DocumentFile directory;
     private File directoryOld;
+    private boolean math;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +50,7 @@ public class BatchActivity extends Activity  implements Runnable {
         setContentView(R.layout.activity_batch);
         status = findViewById(R.id.batch_status);
         editorView = new EditorView(this);
+        math=getIntent().getBooleanExtra("MATH_MODE",true);
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         if(Build.VERSION.SDK_INT>=21) {
             startActivityForResult(intent, REQUEST_DIRECTORY);
@@ -114,7 +106,7 @@ public class BatchActivity extends Activity  implements Runnable {
                 timeUsedExtract+=(System.nanoTime()-startTime);
                 PointerEvent[] events = wrap(traceList);
                 startTime = System.nanoTime();
-                String latex=MyscriptEngine.recognize(events, editorView);
+                String latex=MyscriptEngine.recognize(events, editorView,math,math? MimeType.LATEX:MimeType.TEXT)[0];
                 timeUsedRecognize+=(System.nanoTime()-startTime);
                 buf.append(latex).append('\n');
                 runOnUiThread(new Prompt(latex+"\n"+processed + "/" + total+"("+timeUsedExtract/1e6+"+"+timeUsedRecognize/1e6+"ms)"));
@@ -143,7 +135,7 @@ public class BatchActivity extends Activity  implements Runnable {
                 timeUsedExtract+=(System.nanoTime()-startTime);
                 PointerEvent[] events = wrap(traceList);
                 startTime = System.nanoTime();
-                String latex=MyscriptEngine.recognize(events, editorView);
+                String latex=MyscriptEngine.recognize(events, editorView,math,math? MimeType.LATEX:MimeType.TEXT)[0];
                 timeUsedRecognize+=(System.nanoTime()-startTime);
                 buf.append(latex).append('\n');
                 runOnUiThread(new Prompt(latex+"\n"+processed + "/" + total+"("+timeUsedExtract/1e6+"+"+timeUsedRecognize/1e6+"ms)"));

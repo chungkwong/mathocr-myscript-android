@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -25,18 +25,30 @@ import com.myscript.iink.ConversionState;
 import com.myscript.iink.Editor;
 import com.myscript.iink.Engine;
 import com.myscript.iink.IEditorListener;
+import com.myscript.iink.IRendererListener;
 import com.myscript.iink.MimeType;
 import com.myscript.iink.PointerEvent;
 import com.myscript.iink.PointerEventType;
 import com.myscript.iink.PointerType;
+import com.myscript.iink.Renderer;
+import com.myscript.iink.graphics.Color;
+import com.myscript.iink.graphics.FillRule;
+import com.myscript.iink.graphics.ICanvas;
+import com.myscript.iink.graphics.IPath;
+import com.myscript.iink.graphics.LineCap;
+import com.myscript.iink.graphics.LineJoin;
+import com.myscript.iink.graphics.Transform;
 import com.myscript.iink.uireferenceimplementation.EditorView;
 import com.myscript.iink.uireferenceimplementation.FontUtils;
 import com.myscript.iink.uireferenceimplementation.InputController;
+import com.myscript.iink.uireferenceimplementation.Path;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import cc.chungkwong.mathocr.extractor.BoundBox;
@@ -57,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditorView editorView;
     private TextView resultView;
     private MimeType type = MimeType.LATEX;
-    private boolean whiteOnBlack = false;
+    private boolean whiteOnBlack = false,math=true,myscript=true;
     private Uri photoURI;
     private File photoFile;
 
@@ -152,6 +164,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             menu.findItem(R.id.menu_latex).setChecked(true);
         }
         menu.findItem(R.id.menu_white_on_black).setChecked(whiteOnBlack);
+        menu.findItem(R.id.menu_math).setChecked(math);
+        menu.findItem(R.id.menu_myscript).setChecked(myscript);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -159,11 +173,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_test: {
-                startActivity(new Intent(this, TestActivity.class));
+                startActivity(new Intent(this, TestActivity.class).putExtra("MATH_MODE",math));
                 return true;
             }
             case R.id.menu_batch: {
-                startActivity(new Intent(this, BatchActivity.class));
+                startActivity(new Intent(this, BatchActivity.class).putExtra("MATH_MODE",math));
                 return true;
             }
             case R.id.menu_latex: {
@@ -182,6 +196,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 type = MimeType.JIIX;
                 item.setChecked(true);
                 recognize();
+                return true;
+            }
+            case R.id.menu_math:{
+                contentPackage.removePart(contentPart);
+                contentPart.close();
+                math=!math;
+                contentPart = contentPackage.createPart(math?"Math":"Text");
+                editorView.getEditor().setPart(contentPart);
+                item.setChecked(math);
+                return true;
+            }
+            case R.id.menu_myscript:{
+                myscript=!myscript;
+                item.setChecked(myscript);
                 return true;
             }
             case R.id.menu_white_on_black: {
@@ -252,16 +280,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void recognize() {
         Editor editor = editorView.getEditor();
-        ConversionState[] supportedStates = editor.getSupportedTargetConversionStates(null);
-        if (supportedStates.length > 0) {
-            editor.convert(null, supportedStates[0]);
-            editor.waitForIdle();
-            try {
-                String code = editor.export_(editor.getRootBlock(), type, null);
-                resultView.setText(code);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if(myscript) {
+            ConversionState[] supportedStates = editor.getSupportedTargetConversionStates(null);
+            if (supportedStates.length > 0) {
+                editor.convert(null, supportedStates[0]);
+                editor.waitForIdle();
+                try {
+                    String code = editor.export_(editor.getRootBlock(), type, null);
+                    resultView.setText(code);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        }else{
+//            resultView.setText("");
+//            final List<Trace> traceList=new ArrayList<>();
+//            editor.getRenderer().drawCaptureStrokes(0, 0, editor.getViewWidth(), editor.getViewHeight(), new ICanvas() {
+//                @Override
+//                public void setTransform(Transform transform) {
+//                }
+//                @Override
+//                public Transform getTransform() {
+//                    return null;
+//                }
+//                @Override
+//                public void setStrokeColor(Color color) {
+//                }
+//                @Override
+//                public void setStrokeWidth(float v) {
+//                }
+//                @Override
+//                public void setStrokeLineCap(LineCap lineCap) {
+//                }
+//                @Override
+//                public void setStrokeLineJoin(LineJoin lineJoin) {
+//                }
+//                @Override
+//                public void setStrokeMiterLimit(float v) {
+//                }
+//                @Override
+//                public void setStrokeDashArray(float[] floats) {
+//                }
+//                @Override
+//                public void setStrokeDashOffset(float v) {
+//                }
+//                @Override
+//                public void setFillColor(Color color) {
+//                }
+//                @Override
+//                public void setFillRule(FillRule fillRule) {
+//                }
+//                @Override
+//                public void setFontProperties(String s, float v, float v1, String s1, String s2, int i) {
+//                }
+//                @Override
+//                public void startGroup(String s, float v, float v1, float v2, float v3, boolean b) {
+//                }
+//                @Override
+//                public void endGroup(String s) {
+//                }
+//                @Override
+//                public void startItem(String s) {
+//                }
+//                @Override
+//                public void endItem(String s) {
+//                }
+//                @Override
+//                public IPath createPath() {
+//                    return new TracePath();
+//                }
+//                @Override
+//                public void drawPath(IPath iPath) {
+//                    traceList.addAll(((TracePath)iPath).getTraceList());
+//                }
+//                @Override
+//                public void drawRectangle(float v, float v1, float v2, float v3) {
+//                }
+//                @Override
+//                public void drawLine(float v, float v1, float v2, float v3) {
+//                }
+//                @Override
+//                public void drawObject(String s, String s1, float v, float v1, float v2, float v3) {
+//                }
+//                @Override
+//                public void drawText(String s, float v, float v1, float v2, float v3, float v4, float v5) {
+//                }
+//            });
+//            Log.w("mathocr","trace count:"+traceList.size());
+//            List<Candidate> candidates = Recognizer.recognize(traceList, 4, 64);
+//            for(Candidate candidate:candidates){
+//                resultView.append(candidate.getLatex()+"    \n");
+//            }
         }
     }
 
